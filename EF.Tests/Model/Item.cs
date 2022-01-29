@@ -2,14 +2,7 @@ namespace EF.Tests.Model
 {
     public class Item
     {
-        public Item(int id, string name, int amount)
-        {
-            Id = id;
-            Name = name;
-            Amount = amount;
-        }
-
-        public int Id { get; }
+        public int Id { get; init; }
 
         public string Name { get; set; }
 
