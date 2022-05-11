@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace EF.Tests;
+namespace EF.Tests.Common;
 
 public static class TestDbContextFactory
 {

@@ -1,7 +1,7 @@
 using EF.Tests.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace EF.Tests
+namespace EF.Tests.Common
 {
     public class TestDbContext : DbContext
     {
@@ -20,6 +20,10 @@ namespace EF.Tests
             modelBuilder.Entity<Item>()
                 .Property(x => x.Order)
                 .HasDefaultValueSql("nextval('\"OrderNumbers\"')");
+
+            modelBuilder.Entity<Item>()
+                .Property(x => x.Computed)
+                .HasComputedColumnSql(@"""Name"" || ':' || ""Amount""", stored: true);
             
             base.OnModelCreating(modelBuilder);
         }

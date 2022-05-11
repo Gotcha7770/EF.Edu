@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using EF.Tests.Common;
 using EF.Tests.Model;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;

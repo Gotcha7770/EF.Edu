@@ -1,6 +1,6 @@
 using System.Data.Common;
 using BenchmarkDotNet.Attributes;
-using EF.Tests;
+using EF.Tests.Common;
 using EF.Tests.Model;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -9,19 +9,18 @@ namespace EF.Benchmarks;
 
 public class FirstOrDefaultOnPrimaryKeyBench 
 {
-    private readonly DbContextOptions<TestContext> _options;
-    private readonly DbConnection _connection;
-    
+    private readonly DbContextOptions<TestDbContext> _options;
+
     public FirstOrDefaultOnPrimaryKeyBench()
     {
-        _connection = new SqliteConnection("Filename=:memory:");
-        _options = new DbContextOptionsBuilder<TestContext>()
-            .UseSqlite(_connection)
+        DbConnection connection = new SqliteConnection("Filename=:memory:");
+        _options = new DbContextOptionsBuilder<TestDbContext>()
+            .UseSqlite(connection)
             .Options;
             
-        _connection.Open();
+        connection.Open();
             
-        using (var context = new TestContext(_options))
+        using (var context = new TestDbContext(_options))
         {
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
@@ -41,7 +40,7 @@ public class FirstOrDefaultOnPrimaryKeyBench
     [Benchmark]
     public Item FirstOrDefault()
     {
-        using (var context = new TestContext(_options))
+        using (var context = new TestDbContext(_options))
         {
             return context.Items.FirstOrDefault(x => x.Id == 5555);
         }
@@ -50,7 +49,7 @@ public class FirstOrDefaultOnPrimaryKeyBench
     [Benchmark]
     public Item Find()
     {
-        using (var context = new TestContext(_options))
+        using (var context = new TestDbContext(_options))
         {
             return context.Find<Item>(5555);
         }
