@@ -4,10 +4,12 @@ namespace EF.Tests.Model
     {
         public int Id { get; init; }
         
-        public int Order { get; set; }
+        public int Order { get; init; }
 
         public string Name { get; set; }
 
         public int Amount { get; set; }
+        
+        public string Computed { get; set; }
     }
 }
