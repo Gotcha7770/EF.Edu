@@ -1,6 +1,6 @@
-﻿namespace EF.Tests.Model;
+﻿namespace EF.Tests.Dtos;
 
-public class Person
+public class PersonDto
 {
     public int Id { get; init; }
 
@@ -12,5 +12,5 @@ public class Person
 
     public string FullName { get; set; }
     
-    public string CountryCode { get; set; }
+    public string Country { get; set; }
 }
