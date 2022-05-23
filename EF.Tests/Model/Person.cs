@@ -1,4 +1,6 @@
-﻿namespace EF.Tests.Model;
+﻿using EntityFrameworkCore.Projectables;
+
+namespace EF.Tests.Model;
 
 public class Person
 {
@@ -10,7 +12,10 @@ public class Person
     
     public string LastName { get; set; }
 
-    public string FullName { get; set; }
+    [Projectable]
+    public string FullName => SecondName == null 
+        ? FirstName + " " + LastName
+        : FirstName + " " + SecondName + " " + LastName;
     
     public string CountryCode { get; set; }
 }

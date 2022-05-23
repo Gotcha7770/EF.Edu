@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using EF.Tests.Common;
 using EF.Tests.Model;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ public class OrderByStringFormatExpressionTests
     public void Test()
     {
         var options = new DbContextOptionsBuilder<TestDbContext>().UseNpgsql("host=localhost;database=testdb;user id=postgres;password=postgres;")
+            .UseProjectables()
+            .LogTo(Console.WriteLine)
             .Options;
 
         var dbContext = TestDbContextFactory.Create(options);
@@ -30,9 +33,8 @@ public class OrderByStringFormatExpressionTests
 
         dbContext.SaveChanges();
 
-        var result = dbContext.Persons
-            //.OrderBy(x => $"{x.FirstName ?? string.Empty} {x.SecondName ?? string.Empty} {x.LastName ?? string.Empty}")
-            .OrderBy(x => x.FullName)
-            .ToArray();
+        var query = dbContext.Persons.OrderBy(x => x.FullName);
+        var sql = query.ToQueryString();
+        var result = query.ToArray();
     }
 }

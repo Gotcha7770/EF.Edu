@@ -31,11 +31,11 @@ namespace EF.Tests.Common
                 .HasForeignKey<Document>(x => x.ItemId)
                 .IsRequired();
 
-            modelBuilder.Entity<Person>()
-                .Property(x => x.FullName)
-                //.HasComputedColumnSql(@"TRIM(COALESCE(""FirstName"", '') || ' ' || COALESCE(""SecondName"", '') || ' ' || COALESCE(""LastName"", ''))", stored: true);
-                .HasComputedColumnSql(@"CASE WHEN ""SecondName"" IS NULL THEN ""FirstName"" || ' ' || ""LastName"" 
-                                              ELSE ""FirstName"" || ' ' || ""SecondName"" || ' ' || ""LastName"" END", stored: true);
+            // modelBuilder.Entity<Person>()
+            //     .Property(x => x.FullName)
+            //     //.HasComputedColumnSql(@"TRIM(COALESCE(""FirstName"", '') || ' ' || COALESCE(""SecondName"", '') || ' ' || COALESCE(""LastName"", ''))", stored: true);
+            //     .HasComputedColumnSql(@"CASE WHEN ""SecondName"" IS NULL THEN ""FirstName"" || ' ' || ""LastName"" 
+            //                                   ELSE ""FirstName"" || ' ' || ""SecondName"" || ' ' || ""LastName"" END", stored: true);
             
             base.OnModelCreating(modelBuilder);
         }
