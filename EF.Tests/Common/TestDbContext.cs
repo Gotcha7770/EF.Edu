@@ -1,4 +1,5 @@
 using EF.Tests.Model;
+using EntityFrameworkCore.MemoryJoin;
 using Microsoft.EntityFrameworkCore;
 
 namespace EF.Tests.Common
@@ -10,6 +11,8 @@ namespace EF.Tests.Common
         public DbSet<Document> Documents { get; set; }
         
         public DbSet<Person> Persons { get; set; }
+        
+        protected DbSet<QueryModelClass> QueryData { get; set; }
 
         public TestDbContext() { }
         

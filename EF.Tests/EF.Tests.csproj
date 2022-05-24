@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="11.0.1" />
         <PackageReference Include="Countries.Core" Version="1.0.0" />
+        <PackageReference Include="EntityFrameworkCore.MemoryJoin" Version="0.8.0" />
         <PackageReference Include="EntityFrameworkCore.Projectables" Version="2.2.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.1" />

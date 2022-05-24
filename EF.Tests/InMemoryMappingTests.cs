@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using EF.Tests.Common;
 using EF.Tests.Dtos;
 using EF.Tests.Model;
+using EntityFrameworkCore.MemoryJoin;
 using Maddalena;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -18,11 +17,7 @@ public class InMemoryMappingTests
     {
         var countries = Enum.GetValues<CountryCode>()
             .Select(x => (Code: x.ToString(), Country: Country.FromCode(x).OfficialName))
-            .ToDictionary(x => x.Code);
-        
-        var config = new MapperConfiguration(cfg => cfg.CreateMap<Person, PersonDto>()
-            //.ForMember(dto => dto.Country, src => src.MapFrom(x => x.CountryCode == "JP" ? "Japan" : "Czech Republic")));
-            .ForMember(dto => dto.Country, src => src.MapFrom(x => countries[x.CountryCode])));
+            .ToArray();
         
         var options = new DbContextOptionsBuilder<TestDbContext>().UseNpgsql("host=localhost;database=testdb;user id=postgres;password=postgres;")
             .LogTo(Console.WriteLine)
@@ -39,12 +34,36 @@ public class InMemoryMappingTests
             {
                 FirstName = "Иван",
                 CountryCode = "JP"
+            },
+            new Person
+            {
+                FirstName = "Сергей",
+                CountryCode = "JP"
+            },
+            new Person
+            {
+                FirstName = "Евгений",
+                CountryCode = "AU"
             });
 
         dbContext.SaveChanges();
 
-        var result = dbContext.Persons
-            .ProjectTo<PersonDto>(config)
-            .ToArray();
+        var queryable = dbContext.FromLocalList(countries);
+
+        var query = dbContext.Persons.Join(queryable,
+                p => p.CountryCode,
+                t => t.Code,
+                (p, t) => new PersonDto
+                {
+                    FirstName = p.FirstName,
+                    Country = t.Country
+                })
+            .Where(x => x.Country == "Japan")
+            .OrderBy(x => x.FirstName)
+            .Skip(1)
+            .Take(6);
+        
+        var sql = query.ToQueryString();
+        var result = query.ToArray();
     }
 }
