@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using EF.Tests.Common;
-using EF.Tests.Dtos;
 using EF.Tests.Model;
 using EntityFrameworkCore.MemoryJoin;
 using Maddalena;
@@ -12,6 +11,8 @@ namespace EF.Tests;
 
 public class InMemoryMappingTests
 {
+    record PersonDto(string FirstName, string Country);
+
     [Fact]
     public void Test()
     {
@@ -53,11 +54,7 @@ public class InMemoryMappingTests
         var query = dbContext.Persons.Join(queryable,
                 p => p.CountryCode,
                 t => t.Code,
-                (p, t) => new PersonDto
-                {
-                    FirstName = p.FirstName,
-                    Country = t.Country
-                })
+                (p, t) => new PersonDto(p.FirstName, t.Country))
             .Where(x => x.Country == "Japan")
             .OrderBy(x => x.FirstName)
             .Skip(1)
