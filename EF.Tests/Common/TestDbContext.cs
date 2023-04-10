@@ -7,10 +7,9 @@ namespace EF.Tests.Common
     public class TestDbContext : DbContext
     {
         public DbSet<Item> Items { get; set; }
-        
         public DbSet<Document> Documents { get; set; }
-        
         public DbSet<Person> Persons { get; set; }
+        public DbSet<Company> Companies { get; set; }
         
         protected DbSet<QueryModelClass> QueryData { get; set; }
 

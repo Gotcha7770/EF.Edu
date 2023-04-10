@@ -11,11 +11,13 @@ public class Person
     public string SecondName { get; set; }
     
     public string LastName { get; set; }
+    
+    public string CountryCode { get; set; }
+
+    public Company Company { get; set; }
 
     [Projectable]
     public string FullName => SecondName == null 
         ? FirstName + " " + LastName
         : FirstName + " " + SecondName + " " + LastName;
-    
-    public string CountryCode { get; set; }
 }
