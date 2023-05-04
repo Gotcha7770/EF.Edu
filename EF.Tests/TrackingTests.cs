@@ -2,9 +2,10 @@
 using System.Linq;
 using EF.Tests.Common;
 using EF.Tests.Model;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Shouldly;
 using Xunit;
+using static FluentAssertions.FluentActions;
 
 namespace EF.Tests;
 
@@ -21,7 +22,8 @@ public class TrackingTests
             .FirstOrDefault(x => x.Id == 1);
 
         item.Name = "NewName";
-        Should.Throw<InvalidOperationException>(() => dbContext.Items.Update(item));
+        Invoking(() => dbContext.Items.Update(item))
+            .Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -34,11 +36,12 @@ public class TrackingTests
         var item1 = dbContext1.Find<Item>(1);
         item1.Name = "NewName";
         dbContext1.Items.Update(item1);
-        
+
         var dbContext2 = TestDbContextFactory.Create();
         var item2 = dbContext1.Find<Item>(1);
         dbContext2.Items.Remove(item2);
         
-        Should.Throw<DbUpdateConcurrencyException>(() => dbContext2.SaveChanges());
+        Invoking(() => dbContext2.SaveChanges())
+            .Should().Throw<DbUpdateConcurrencyException>();
     }
 }

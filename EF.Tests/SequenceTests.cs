@@ -1,7 +1,7 @@
 using EF.Tests.Common;
 using EF.Tests.Model;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Shouldly;
 using Xunit;
 
 namespace EF.Tests;
@@ -39,6 +39,6 @@ public class SequenceTests
         dbContext.Items.Add(new Item { Amount = 42 });
         dbContext.SaveChanges();
         
-        dbContext.Find<Item>(4).Order.ShouldBe(4);
+        dbContext.Find<Item>(4).Order.Should().Be(4);
     }
 }
