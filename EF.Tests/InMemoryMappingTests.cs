@@ -14,17 +14,13 @@ public class InMemoryMappingTests
     record PersonDto(string FirstName, string Country);
 
     [Fact]
-    public void Test()
+    public void JoinInMemoryCollectionTest()
     {
         var countries = Enum.GetValues<CountryCode>()
             .Select(x => (Code: x.ToString(), Country: Country.FromCode(x).OfficialName))
             .ToArray();
-        
-        var options = new DbContextOptionsBuilder<TestDbContext>().UseNpgsql("host=localhost;database=testdb;user id=postgres;password=postgres;")
-            .LogTo(Console.WriteLine)
-            .Options;
 
-        var dbContext = TestDbContextFactory.Create(options);
+        var dbContext = TestDbContextFactory.Create(TestDbContextFactory.LocalPostgresDbOptions);
         dbContext.Persons.AddRange(
             new Person
             {
