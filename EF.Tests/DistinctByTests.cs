@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using EF.Tests.Common;
 using EF.Tests.Model;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +11,7 @@ public class DistinctByTests
     [Fact]
     public void Test()
     {
-        var options = new DbContextOptionsBuilder<TestDbContext>().UseNpgsql("host=localhost;database=testdb;user id=postgres;password=postgres;")
-            .LogTo(Console.WriteLine)
-            .Options;
-        
-        var dbContext = TestDbContextFactory.Create(options);
+        var dbContext = TestDbContextFactory.Create(TestDbContextFactory.LocalPostgresDbOptions);
         
         dbContext.Persons.AddRange(
             new Person
@@ -41,7 +36,6 @@ public class DistinctByTests
         dbContext.SaveChanges();
 
         var query = dbContext.Persons
-            //.Distinct();
             .DistinctBy(x => x.FirstName);
         
         var sql = query.ToQueryString();
