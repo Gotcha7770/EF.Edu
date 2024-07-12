@@ -26,6 +26,13 @@ public static class TestDbContextFactory
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
+        context.Database.ExecuteSqlRaw(
+            """
+            CREATE FUNCTION is_time_between(time, time, time)
+            RETURNS boolean
+            RETURN $1 between $2 and $3;
+            """);
+
         return context;
     }
 }
