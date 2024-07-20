@@ -42,6 +42,11 @@ public class TestDbContext : DbContext
         //     .HasComputedColumnSql(@"CASE WHEN ""SecondName"" IS NULL THEN ""FirstName"" || ' ' || ""LastName"" 
         //                                   ELSE ""FirstName"" || ' ' || ""SecondName"" || ' ' || ""LastName"" END", stored: true);
 
+        modelBuilder.Entity<Trip>()
+            .HasMany(x => x.Points)
+            .WithOne(x => x.Trip)
+            .HasForeignKey(x => x.TripId);
+
         modelBuilder.HasDbFunction(typeof(TestDbContext).GetMethod(nameof(IsTimeBetween), [typeof(TimeOnly), typeof(TimeOnly), typeof(TimeOnly)]))
             .HasName("is_time_between");
 

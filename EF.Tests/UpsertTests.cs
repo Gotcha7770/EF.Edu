@@ -1,9 +1,7 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using EF.Tests.Common;
 using EF.Tests.Model;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace EF.Tests;
@@ -24,7 +22,7 @@ public class UpsertTests
     public async Task IfExistsNotAdd()
     {
         var dbContext = TestDbContextFactory.Create(TestDbContextFactory.LocalPostgresDbOptions);
-        var person = await dbContext.AddFake<Person>();
+        var person = await dbContext.AddFake(Fakes.Get<Person>);
         
         await dbContext.AddIfNotExists(new Person { Id = person.Id, FirstName = "Person to replace" }, CancellationToken.None);
         dbContext.Should()

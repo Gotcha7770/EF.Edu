@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using EF.Tests.Common;
 using EF.Tests.Model;
 using Xunit;
@@ -12,26 +13,23 @@ public class AddingRelatedEntityTests
     [Fact]
     public async Task AddOneToOneEntity()
     {
-        var dbContext = TestDbContextFactory.Create();
-        var document = await dbContext.AddFake<Document>();
+        await using var dbContext = TestDbContextFactory.Create();
 
-        var item = Fakes.Get<Item>();
-        document.Item = item;
-        await dbContext.SaveChangesAsync();
+        var document = await dbContext.AddFake(Fakes.Get<Document>);
 
-        dbContext.Should().Contain(item, x => x.Id);
+        dbContext.Should().Contain(document, x => x.Id);
     }
 
     [Fact]
     public async Task AddManyToOneEntity()
     {
-        var dbContext = TestDbContextFactory.Create();
-        var company = await dbContext.AddFake<Company>();
+        await using var dbContext = TestDbContextFactory.Create();
 
-        var person = Fakes.Get<Person>();
-        company.Persons.Add(person);
-        await dbContext.SaveChangesAsync();
+        var company = await dbContext.AddFake(() =>
+            Fakes.CompanyFaker
+                .WithPersons(Fakes.Get<Person>())
+                .Generate());
 
-        dbContext.Should().Contain(person, x => x.Id);
+        dbContext.Should().Contain(company.Persons.First(), x => x.Id);
     }
 }

@@ -11,7 +11,7 @@ public class IncludeTests
     [Fact]
     public async Task Test()
     {
-        var dbContext = TestDbContextFactory.Create();
+        await using var dbContext = TestDbContextFactory.Create();
         
         var microsoft = new Company { Name = "Microsoft" };
         var google = new Company { Name = "Google" };

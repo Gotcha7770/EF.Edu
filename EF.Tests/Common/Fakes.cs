@@ -7,24 +7,27 @@ namespace EF.Tests.Common;
 
 internal static class Fakes
 {
-    private static Faker<Item> ItemFaker { get; } = new Faker<Item>()
+    public static Faker<Item> ItemFaker { get; } = new Faker<Item>()
         .RuleFor(x => x.Id, f => f.IndexFaker)
         .RuleFor(x => x.Order, f => f.Random.Int())
         .RuleFor(x => x.Amount, f => f.Random.Int());
 
-    private static Faker<Document> DocumentFaker { get; } = new Faker<Document>()
+    public static Faker<Document> DocumentFaker { get; } = new Faker<Document>()
         .RuleFor(x => x.Id, f => f.IndexFaker);
     
-    private static Faker<Person> PersonFaker { get; } = new Faker<Person>()
+    public static Faker<Person> PersonFaker { get; } = new Faker<Person>()
         .RuleFor(x => x.Id, f => f.IndexFaker)
         .RuleFor(x => x.FirstName, f => f.Person.FirstName)
         .RuleFor(x => x.SecondName, f => f.Person.FirstName)
         .RuleFor(x => x.LastName, f => f.Person.LastName);
     
-    private static Faker<Company> CompanyFaker { get; } = new Faker<Company>()
+    public static Faker<Company> CompanyFaker { get; } = new Faker<Company>()
         .RuleFor(x => x.Id, f => f.IndexFaker)
         .RuleFor(x => x.Name, f => f.Company.CompanyName());
 
+    public static Faker<Trip> TripFaker { get; } = new Faker<Trip>();
+    public static Faker<Point> PointFaker { get; } = new Faker<Point>();
+        
     public static T Get<T>() where T : class => Get(typeof(T)) as T;
     
     private static object Get(Type type)
@@ -35,7 +38,14 @@ internal static class Fakes
             Type when type == typeof(Document) => DocumentFaker.Generate(),
             Type when type == typeof(Person) => PersonFaker.Generate(),
             Type when type == typeof(Company) => CompanyFaker.Generate(),
+            Type when type == typeof(Trip) => TripFaker.Generate(),
+            Type when type == typeof(Point) => PointFaker.Generate(),
             _ => throw new ArgumentOutOfRangeException(type.Name)
         };
+    }
+    
+    public static Faker<Company> WithPersons(this Faker<Company> source, params Person[] persons)
+    {
+        return source.RuleFor(x => x.Persons, persons);
     }
 }

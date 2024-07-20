@@ -13,11 +13,7 @@ public class EnumerateTests
     [Fact]
     public async Task Test()
     {
-        var options = new DbContextOptionsBuilder<TestDbContext>().UseNpgsql("host=localhost;database=testdb;user id=postgres;password=postgres;")
-            .LogTo(Console.WriteLine)
-            .Options;
-        
-        var dbContext = TestDbContextFactory.Create(options);
+        await using var dbContext = TestDbContextFactory.Create(TestDbContextFactory.LocalPostgresDbOptions);
         
         var microsoft = new Company { Name = "Microsoft" };
         var google = new Company { Name = "Google" };

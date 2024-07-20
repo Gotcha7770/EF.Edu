@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using EF.Tests.Common;
 using EF.Tests.Model;
 using Microsoft.EntityFrameworkCore;
@@ -16,16 +17,11 @@ public class TimeOnlyTests
 
     public TimeOnlyTests()
     {
-        var options = new DbContextOptionsBuilder<TestDbContext>().UseNpgsql("host=localhost;database=testdb2;user id=postgres;password=postgres;")
-            .UseProjectables()
-            .LogTo(Console.WriteLine)
-            .Options;
-
-        _dbContext = TestDbContextFactory.Create(options);
+        _dbContext = TestDbContextFactory.Create(TestDbContextFactory.LocalPostgresDbOptions);
     }
 
     [Fact]
-    public void TimeInRange()
+    public async Task TimeInRange()
     {
         Trip[] items =
         [
@@ -73,8 +69,8 @@ public class TimeOnlyTests
             }
         ];
 
-        _dbContext.Trips.AddRange(items);
-        _dbContext.SaveChanges();
+        await _dbContext.Trips.AddRangeAsync(items);
+        await _dbContext.SaveChangesAsync();
 
         var start = new TimeOnly(10, 0);
         var end = new TimeOnly(11, 0);
@@ -89,6 +85,6 @@ public class TimeOnlyTests
             .Where(x => TestDbContext.IsTimeBetween(x.Points.Select(p => p.DepartureTime).Min(), start, end));
             
         var sql = query.ToQueryString();
-        var result = query.ToArray();
+        var result = await query.ToArrayAsync();
     }
 }

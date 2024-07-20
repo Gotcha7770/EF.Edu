@@ -5,10 +5,11 @@ namespace EF.Tests.Common;
 
 public static class TestDbContextFactory
 {
-    public static readonly DbContextOptions<TestDbContext> LocalPostgresDbOptions = new DbContextOptionsBuilder<TestDbContext>()
-        .UseNpgsql("host=localhost;database=testdb;user id=postgres;password=postgres;")
-        .LogTo(Console.WriteLine)
-        .Options;
+    public static readonly DbContextOptions<TestDbContext> LocalPostgresDbOptions =
+        new DbContextOptionsBuilder<TestDbContext>()
+            .UseNpgsql("host=localhost;database=testdb;user id=postgres;password=postgres;")
+            .LogTo(Console.WriteLine)
+            .Options;
 
     public static TestDbContext Create()
     {
@@ -16,22 +17,25 @@ public static class TestDbContextFactory
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        return Create(options);
+        return Create(options, true);
     }
 
-    public static TestDbContext Create(DbContextOptions<TestDbContext> options)
+    public static TestDbContext Create(DbContextOptions<TestDbContext> options, bool isInMemory = false)
     {
         var context = new TestDbContext(options);
 
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
-        context.Database.ExecuteSqlRaw(
-            """
-            CREATE FUNCTION is_time_between(time, time, time)
-            RETURNS boolean
-            RETURN $1 between $2 and $3;
-            """);
+        if (!isInMemory)
+        {
+            context.Database.ExecuteSqlRaw(
+                """
+                CREATE FUNCTION is_time_between(time, time, time)
+                RETURNS boolean
+                RETURN $1 between $2 and $3;
+                """);
+        }
 
         return context;
     }

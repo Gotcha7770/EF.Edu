@@ -48,13 +48,13 @@ public class InMemoryMappingTests
         var queryable = dbContext.FromLocalList(countries);
 
         var query = dbContext.Persons.Join(queryable,
-                p => p.CountryCode,
-                t => t.Code,
-                (p, t) => new PersonDto(p.FirstName, t.Country))
+                l => l.CountryCode,
+                r => r.Code,
+                (l, r) => new { l.FirstName, r.Country })
             .Where(x => x.Country == "Japan")
             .OrderBy(x => x.FirstName)
             .Skip(1)
-            .Take(6);
+            .Take(5);
         
         var sql = query.ToQueryString();
         var result = query.ToArray();
