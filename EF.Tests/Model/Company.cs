@@ -6,6 +6,7 @@ public class Company
 {
     public int Id { get; init; }
     public string Name { get; set; }
+    public Address Address { get; set; }
     
     public ICollection<Person> Persons { get; set; } = new List<Person>();
 }

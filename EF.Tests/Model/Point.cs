@@ -9,4 +9,6 @@ public class Point
     public DateOnly DepartureDate { get; set; }
     public TimeOnly DepartureTime { get; set; }
     public Trip Trip { get; set; }
+    
+    public int TripId { get; set; }
 }
