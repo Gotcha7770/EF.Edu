@@ -46,13 +46,21 @@ public class TestDbContext : DbContext
             .HasMany(x => x.Legs)
             .WithOne(x => x.Trip)
             .HasForeignKey(x => x.TripId);
+        
+        modelBuilder.Entity<Leg>()
+            .Property(x => x.DepartureDate)
+            .HasColumnType("timestamp without time zone");
+            
+        modelBuilder.Entity<Leg>()
+            .Property(x => x.ArrivalDate)
+            .HasColumnType("timestamp without time zone");
 
-        modelBuilder.HasDbFunction(typeof(TestDbContext).GetMethod(nameof(IsTimeBetween), [typeof(TimeOnly), typeof(TimeOnly), typeof(TimeOnly)]))
+        modelBuilder.HasDbFunction(typeof(TestDbContext).GetMethod(nameof(IsTimeBetween), [typeof(DateTime), typeof(TimeOnly), typeof(TimeOnly)]))
             .HasName("is_time_between");
 
         base.OnModelCreating(modelBuilder);
     }
 
-    public static bool IsTimeBetween(TimeOnly time, TimeOnly start, TimeOnly end) =>
+    public static bool IsTimeBetween(DateTime dateTime, TimeOnly start, TimeOnly end) =>
         throw new NotImplementedException(); //time >= start && time <= end;
 }

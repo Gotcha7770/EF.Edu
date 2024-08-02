@@ -13,9 +13,9 @@ public class GroupJoinTests
     private class Route
     {
         public string StartCode { get; init; }
-        public DateOnly DepartureDate { get; init; }
+        public DateTime DepartureDate { get; init; }
         public string EndCode { get; init; }
-        public DateOnly ArrivalDate { get; init; }
+        public DateTime ArrivalDate { get; init; }
     }
 
     private readonly TestDbContext _dbContext = TestDbContextFactory.Create(TestDbContextFactory.LocalPostgresDbOptions);
@@ -32,16 +32,16 @@ public class GroupJoinTests
                     new Leg
                     {
                         StartCode = "First",
-                        DepartureDate = new DateOnly(2024, 6, 11),
+                        DepartureDate = new DateTime(2024, 6, 11),
                         EndCode = "Second",
-                        ArrivalDate = new DateOnly(2024, 6, 12)
+                        ArrivalDate = new DateTime(2024, 6, 12)
                     },
                     new Leg
                     {
                         StartCode = "Second",
-                        DepartureDate = new DateOnly(2024, 6, 12),
+                        DepartureDate = new DateTime(2024, 6, 12),
                         EndCode = "Third",
-                        ArrivalDate = new DateOnly(2024, 6, 13)
+                        ArrivalDate = new DateTime(2024, 6, 13)
                     }
                 ]
             },
@@ -52,9 +52,9 @@ public class GroupJoinTests
                     new Leg
                     {
                         StartCode = "Second",
-                        DepartureDate = new DateOnly(2024, 6, 11),
+                        DepartureDate = new DateTime(2024, 6, 11),
                         EndCode = "First",
-                        ArrivalDate = new DateOnly(2024, 6, 13)
+                        ArrivalDate = new DateTime(2024, 6, 13)
                     }
                 ]
             }
@@ -68,9 +68,9 @@ public class GroupJoinTests
             new Route
             {
                 StartCode = "First",
-                DepartureDate = new DateOnly(2024, 6, 11),
+                DepartureDate = new DateTime(2024, 6, 11),
                 EndCode = "Third",
-                ArrivalDate = new DateOnly(2024, 6, 13)
+                ArrivalDate = new DateTime(2024, 6, 13)
             }
         ];
 

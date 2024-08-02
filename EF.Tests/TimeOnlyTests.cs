@@ -27,16 +27,16 @@ public class TimeOnlyTests
                     new Leg
                     {
                         StartCode = "First",
-                        DepartureDate = new DateOnly(2024, 6, 11),
+                        DepartureDate = new DateTime(2024, 6, 11),
                         EndCode = "Second",
-                        ArrivalDate = new DateOnly(2024, 6, 12)
+                        ArrivalDate = new DateTime(2024, 6, 12)
                     },
                     new Leg
                     {
                         StartCode = "Second",
-                        DepartureDate = new DateOnly(2024, 6, 12),
+                        DepartureDate = new DateTime(2024, 6, 12),
                         EndCode = "Third",
-                        ArrivalDate = new DateOnly(2024, 6, 13)
+                        ArrivalDate = new DateTime(2024, 6, 13)
                     }
                 ]
             },
@@ -47,9 +47,9 @@ public class TimeOnlyTests
                     new Leg
                     {
                         StartCode = "Second",
-                        DepartureDate = new DateOnly(2024, 6, 11),
+                        DepartureDate = new DateTime(2024, 6, 11),
                         EndCode = "First",
-                        ArrivalDate = new DateOnly(2024, 6, 13)
+                        ArrivalDate = new DateTime(2024, 6, 13)
                     }
                 ]
             }
@@ -63,12 +63,12 @@ public class TimeOnlyTests
 
         var raw = _dbContext.Legs.FromSql(
             $"""
-            select * from "Points"
-            where "DepartureTime" between {start} and {end}
+            select * from "Legs"
+            where "DepartureDate"::time without time zone between {start} and {end}
             """).ToArray();
         
         var query = _dbContext.Trips
-            .Where(x => TestDbContext.IsTimeBetween(x.Legs.Select(p => p.DepartureTime).Min(), start, end));
+            .Where(x => TestDbContext.IsTimeBetween(x.Legs.Select(p => p.DepartureDate).Min(), start, end));
             
         var sql = query.ToQueryString();
         var result = query.ToArray();

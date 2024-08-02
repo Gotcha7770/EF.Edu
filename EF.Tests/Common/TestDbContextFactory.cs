@@ -23,6 +23,7 @@ public static class TestDbContextFactory
     public static TestDbContext Create(DbContextOptions<TestDbContext> options, bool isInMemory = false)
     {
         var context = new TestDbContext(options);
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
@@ -31,9 +32,9 @@ public static class TestDbContextFactory
         {
             context.Database.ExecuteSqlRaw(
                 """
-                CREATE FUNCTION is_time_between(time, time, time)
+                CREATE FUNCTION is_time_between(timestamp, time, time)
                 RETURNS boolean
-                RETURN $1 between $2 and $3;
+                RETURN $1::time without time zone between $2 and $3;
                 """);
         }
 
