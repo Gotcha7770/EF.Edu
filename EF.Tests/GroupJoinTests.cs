@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using EF.Tests.Common;
 using EF.Tests.Model;
+using EntityFrameworkCore.MemoryJoin;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace EF.Tests;
 
-// https://learn.microsoft.com/ru-ru/ef/core/querying/sql-queries
-// https://learn.microsoft.com/en-us/ef/core/querying/user-defined-function-mapping
-
-public class TimeOnlyTests
+public class GroupJoinTests
 {
+    private class Route
+    {
+        public string StartCode { get; init; }
+        public DateOnly DepartureDate { get; init; }
+        public string EndCode { get; init; }
+        public DateOnly ArrivalDate { get; init; }
+    }
+
     private readonly TestDbContext _dbContext = TestDbContextFactory.Create(TestDbContextFactory.LocalPostgresDbOptions);
 
     [Fact]
-    public void TimeInRange()
+    public void GroupJoin()
     {
         Trip[] items =
         [
@@ -58,19 +63,31 @@ public class TimeOnlyTests
         _dbContext.Trips.AddRange(items);
         _dbContext.SaveChanges();
 
-        var start = new TimeOnly(10, 0);
-        var end = new TimeOnly(11, 0);
+        Route[] creteria =
+        [
+            new Route
+            {
+                StartCode = "First",
+                DepartureDate = new DateOnly(2024, 6, 11),
+                EndCode = "Third",
+                ArrivalDate = new DateOnly(2024, 6, 13)
+            }
+        ];
 
-        var raw = _dbContext.Legs.FromSql(
-            $"""
-            select * from "Points"
-            where "DepartureTime" between {start} and {end}
-            """).ToArray();
+        var routes = _dbContext.FromLocalList(creteria);
+
+        var query =
+            from trip in _dbContext.Trips
+            join point in _dbContext.Legs on trip.Id equals point.TripId into pointsByTrip
+            let start = pointsByTrip.OrderBy(x => x.DepartureDate).First()
+            let end = pointsByTrip.OrderBy(x => x.ArrivalDate).Last()
+            join route in routes
+                on new { start.StartCode, start.DepartureDate }
+                equals new { route.StartCode, route.DepartureDate }
+            select new { trip, pointsByTrip };
         
-        var query = _dbContext.Trips
-            .Where(x => TestDbContext.IsTimeBetween(x.Legs.Select(p => p.DepartureTime).Min(), start, end));
-            
         var sql = query.ToQueryString();
+
         var result = query.ToArray();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-
 namespace EF.Tests.Model;
 
 // https://github.com/koenbeuk/EntityFrameworkCore.Projectables?tab=readme-ov-file
@@ -8,5 +7,5 @@ namespace EF.Tests.Model;
 public class Trip
 {
     public int Id { get; set; }
-    public ICollection<Point> Points { get; set; } = new List<Point>();
+    public ICollection<Leg> Legs { get; set; } = new List<Leg>();
 }

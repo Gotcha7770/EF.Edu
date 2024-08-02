@@ -12,7 +12,7 @@ public class TestDbContext : DbContext
     public DbSet<Person> Persons { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<Trip> Trips { get; set; }
-    public DbSet<Point> Points { get; set; }
+    public DbSet<Leg> Legs { get; set; }
         
     protected DbSet<QueryModelClass> QueryData { get; set; }
 
@@ -43,7 +43,7 @@ public class TestDbContext : DbContext
         //                                   ELSE ""FirstName"" || ' ' || ""SecondName"" || ' ' || ""LastName"" END", stored: true);
 
         modelBuilder.Entity<Trip>()
-            .HasMany(x => x.Points)
+            .HasMany(x => x.Legs)
             .WithOne(x => x.Trip)
             .HasForeignKey(x => x.TripId);
 

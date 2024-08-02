@@ -26,7 +26,7 @@ internal static class Fakes
         .RuleFor(x => x.Name, f => f.Company.CompanyName());
 
     public static Faker<Trip> TripFaker { get; } = new Faker<Trip>();
-    public static Faker<Point> PointFaker { get; } = new Faker<Point>();
+    //public static Faker<Point> PointFaker { get; } = new Faker<Point>();
         
     public static T Get<T>() where T : class => Get(typeof(T)) as T;
     
@@ -39,7 +39,7 @@ internal static class Fakes
             Type when type == typeof(Person) => PersonFaker.Generate(),
             Type when type == typeof(Company) => CompanyFaker.Generate(),
             Type when type == typeof(Trip) => TripFaker.Generate(),
-            Type when type == typeof(Point) => PointFaker.Generate(),
+            //Type when type == typeof(Point) => PointFaker.Generate(),
             _ => throw new ArgumentOutOfRangeException(type.Name)
         };
     }
