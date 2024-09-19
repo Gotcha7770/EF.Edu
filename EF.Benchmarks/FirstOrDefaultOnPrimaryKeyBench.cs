@@ -1,57 +1,48 @@
-using System.Data.Common;
 using BenchmarkDotNet.Attributes;
-using EF.Tests.Common;
-using EF.Tests.Model;
+using EF.Benchmarks.Entities;
 using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 
 namespace EF.Benchmarks;
 
-public class FirstOrDefaultOnPrimaryKeyBench 
+[MemoryDiagnoser]
+public class FirstOrDefaultOnPrimaryKeyBench
 {
-    private readonly DbContextOptions<TestDbContext> _options;
+    private SqliteConnection _connection;
+    private const int PersonId = 5555;
 
-    public FirstOrDefaultOnPrimaryKeyBench()
+    [GlobalSetup]
+    public void Setup()
     {
-        DbConnection connection = new SqliteConnection("Filename=:memory:");
-        _options = new DbContextOptionsBuilder<TestDbContext>()
-            .UseSqlite(connection)
-            .Options;
-            
-        connection.Open();
-            
-        using (var context = new TestDbContext(_options))
-        {
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
+        // База данных SQLite в памяти (Filename=:memory:) живет только в рамках одного соединения.
+        _connection = new SqliteConnection(BenchmarkDbContext.InMemoryConnectionString);
+        using var context = BenchmarkDbContextDesignFactory.CreateDbContext(_connection);
+        _connection.Open();
 
-            var items = Enumerable.Range(0, 10000)
-                .Select(x => new Item
-                {
-                    Id = x,
-                    Name = $"Item{x}",
-                    Amount = 0
-                });
-            context.Items.AddRange(items);
-            context.SaveChanges();
-        }
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+
+        var items = Fakes.SaleFaker.GenerateLazy(10000);
+        context.Sales.AddRange(items);
+        context.SaveChanges();
     }
-    
-    [Benchmark]
-    public Item FirstOrDefault()
+
+    [GlobalCleanup]
+    public void Cleanup()
     {
-        using (var context = new TestDbContext(_options))
-        {
-            return context.Items.FirstOrDefault(x => x.Id == 5555);
-        }
+        _connection.Close();
     }
 
     [Benchmark]
-    public Item Find()
+    public Sale FirstOrDefault()
     {
-        using (var context = new TestDbContext(_options))
-        {
-            return context.Find<Item>(5555);
-        }
+        using var context = BenchmarkDbContextDesignFactory.CreateDbContext(_connection);
+        return context.Sales.FirstOrDefault(x => x.Id == PersonId);
+    }
+
+    [Benchmark]
+    public Sale Find()
+    {
+        using var context = BenchmarkDbContextDesignFactory.CreateDbContext(_connection);
+        return context.Find<Sale>(PersonId);
     }
 }

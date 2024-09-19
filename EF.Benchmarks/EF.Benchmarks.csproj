@@ -10,11 +10,12 @@
 
     <ItemGroup>
       <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\EF.Tests\EF.Tests.csproj" />
+      <PackageReference Include="Bogus" Version="35.6.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
     </ItemGroup>
 
 </Project>
