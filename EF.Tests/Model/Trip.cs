@@ -6,6 +6,6 @@ namespace EF.Tests.Model;
 
 public class Trip
 {
-    public int Id { get; set; }
-    public ICollection<Leg> Legs { get; set; } = new List<Leg>();
+    public int Id { get; init; }
+    public ICollection<Leg> Legs { get; init; } = [];
 }

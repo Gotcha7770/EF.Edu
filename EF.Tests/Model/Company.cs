@@ -5,8 +5,8 @@ namespace EF.Tests.Model;
 public class Company
 {
     public int Id { get; init; }
-    public string Name { get; set; }
-    public Address Address { get; set; }
+    public string Name { get; init; }
     
-    public ICollection<Person> Persons { get; set; } = new List<Person>();
+    public Address Address { get; init; }
+    public ICollection<Person> Persons { get; init; } = [];
 }

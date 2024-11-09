@@ -25,10 +25,9 @@ public class AddingRelatedEntityTests
     {
         await using var dbContext = TestDbContextFactory.Create();
 
-        var company = await dbContext.AddFake(() =>
+        var company = await dbContext.AddFake<Company>(
             Fakes.CompanyFaker
-                .WithPersons(Fakes.Get<Person>())
-                .Generate());
+                .WithPersons(Fakes.Get<Person>()));
 
         dbContext.Should().Contain(company.Persons.First(), x => x.Id);
     }

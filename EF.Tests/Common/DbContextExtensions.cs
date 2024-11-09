@@ -7,13 +7,17 @@ namespace EF.Tests.Common;
 
 public static class DbContextExtensions
 {
-    public static async Task<T> AddFake<T>(this TestDbContext dbContext, Func<T> fakeFactory) where T : class
+    public static async Task<T> AddFake<T>(this TestDbContext dbContext, T fake) where T : class
     {
-        var fake = fakeFactory();
         await dbContext.AddAsync(fake);
         await dbContext.SaveChangesAsync();
 
         return fake;
+    }
+
+    public static Task<T> AddFake<T>(this TestDbContext dbContext, Func<T> fakeFactory) where T : class
+    {
+        return dbContext.AddFake(fakeFactory());
     }
 
     public static IQueryable<T> Where<T, TProperty>(
