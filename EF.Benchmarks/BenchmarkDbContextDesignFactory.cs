@@ -23,4 +23,14 @@ internal class BenchmarkDbContextDesignFactory : IDesignTimeDbContextFactory<Ben
 
         return new BenchmarkDbContext(options);
     }
+    
+    public static BenchmarkDbContext CreateDbContext(DbContextOptions<BenchmarkDbContext> options)
+    {
+        var context =  new BenchmarkDbContext(options);
+        
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+        
+        return context;
+    }
 }
